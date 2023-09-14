@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 
 def google_search(query):
-    base_url = 'https://www.google.com/maps/search/'
+    base_url = 'https://www.google.com/search'
     params = {
         'q': query,
         'hl': 'en' # set the language to return
@@ -42,5 +42,5 @@ def main():
             print(f"Snippet: {result['snippet']}")
             print('\n')
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
