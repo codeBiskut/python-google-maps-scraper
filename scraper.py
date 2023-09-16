@@ -1,6 +1,11 @@
 import requests
 from bs4 import BeautifulSoup
 
+# $ python -m venv project_venv     --creates virtual environment
+# $ source project_venv/bin/activate    --activates virtual environment
+# (project_venv) $ deactivate       --deactivates virtual environment
+
+
 def google_search(query):
     base_url = 'https://www.google.com/search'
     params = {
