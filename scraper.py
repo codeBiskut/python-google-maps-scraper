@@ -1,5 +1,6 @@
 import requests
-from bs4 import BeautifulSoup
+import json
+import csv
 
 # $ python -m venv project_venv     --creates virtual environment
 # $ source project_venv/bin/activate    --activates virtual environment
@@ -7,27 +8,19 @@ from bs4 import BeautifulSoup
 
 
 def google_search(query):
-    base_url = 'https://www.google.com/search'
-    params = {
-        'q': query,
-        'hl': 'en' # set the language to return
-    }
+    url = "https://places.googleapis.com/v1/places:searchText"
 
+    payload = {"textQuery": "kayaks near me"}
     headers = {
-        'User-Agent': 'MoziMozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
+        "Content-Type": "application/json",
+        "X-Goog-FieldMask": "places.displayName,places.formattedAddress,places.websiteUri,places.nationalPhoneNumber,places.rating",
+        "X-Goog-Api-Key": "AIzaSyD2m5kAcnJsPseSkz2CKlZcOF5ijIhQSIM"
     }
 
-    response = requests.get(base_url, params=params,headers=headers)
+    response = requests.request("POST", url, json=payload, headers=headers)
 
     if response.status_code == 200:
-        soup = BeautifulSoup(response.text, 'html.parser')
-        results = []
-
-        for item in soup.select('.tF2Cxc'):
-            title = item.h3.get_text()
-            link = item.a['href']
-            snippet = item.select_one('.aCOpRe').get_text()
-            results.append({'title': title, 'link': link, 'snippet': snippet})
+        
 
         return results
 
@@ -46,6 +39,9 @@ def main():
             print(f"Link: {result['link']}")
             print(f"Snippet: {result['snippet']}")
             print('\n')
+
+    # else:
+    #     print('no results')
 
 if __name__ == '__main__':
     main()
