@@ -21,7 +21,7 @@
 
   To install the required dependencies, you first must have python installed. Then, use the command ```pip install requests PyQt5 python-dotenv``` to install the packages.  
 
-  Additionally, this program requires the use of a Google Places API key. Create a .env file with the line ```API_KEY = {your-api-key-here}``` and place your API key inside. 
+  Additionally, this program requires the use of a Google Places API key. Create a .env file with the line ```API_KEY = {your-api-key-here}``` and place your API key inside of quotes. 
 
   ## Usage
   ---
