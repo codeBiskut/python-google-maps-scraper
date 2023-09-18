@@ -24,7 +24,7 @@
   ## Usage
   ---
 
-  To run the program, navigate in your terminal to the folder where the program is. Then run the command ```python scraper.py`` and the program GUI will show up.   
+  To run the program, navigate in your terminal to the folder where the program is. Then run the command ```python scraper.py``` and the program GUI will show up.   
 
   ## Credits
   ---
