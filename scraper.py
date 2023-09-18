@@ -1,6 +1,9 @@
 import requests
 import csv
 import os
+import sys
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout
 from dotenv import load_dotenv
 
 # python -m venv project_venv         --creates virtual environment
@@ -14,7 +17,7 @@ def google_search(query):
 
     url = "https://places.googleapis.com/v1/places:searchText"
 
-    payload = {"textQuery": "breweries near me"}
+    payload = {"textQuery": query}
     headers = {
         "Content-Type": "application/json",
         "X-Goog-FieldMask": "places.displayName,places.formattedAddress,places.websiteUri,places.nationalPhoneNumber,places.rating",
@@ -24,10 +27,8 @@ def google_search(query):
     response = requests.request("POST", url, json=payload, headers=headers)
 
     if response.status_code == 200:
-        #parse json response into list of dictionaries
         place_data = response.json()
 
-        #class for objects
         class Place:
             def __init__(self, name, address, number, rating, website):
                 self.name = name
@@ -36,10 +37,8 @@ def google_search(query):
                 self.rating = rating
                 self.website = website
 
-        #list of places
         place_objects = []
 
-        #iterate through dictionary lists and create objects
         for place in place_data.get("places", []):
             name = place.get('displayName', {}).get('text')
             address = place.get('formattedAddress')
@@ -80,22 +79,42 @@ def csvExport(search_results):
     print(f'CSV data has been written to {csv_file_name}')
 
 
-def main():
-    search_query = 'breweries'
-    search_results = google_search(search_query)
+def perform_search():
+    query = search_input.text()
+    search_results = google_search(query)
 
     if search_results:
+        status_label.setText("Search successful!")
+        status_label.setStyleSheet("color: green;")
         csvExport(search_results)
-        for result in search_results:
-            print(f"Name: {result.name}")
-            print(f"Address: {result.address}")
-            print(f"Number: {result.number}")
-            print(f"Rating: {result.rating}")
-            print(f"Website: {result.website}")
-            print('\n')
 
     else:
+        status_label.setText("Search failed!")
+        status_label.setStyleSheet("color: red;")
         print('no results')
 
-if __name__ == '__main__':
-    main()
+
+app = QApplication(sys.argv)
+
+window = QWidget()
+window.setWindowTitle("Google Results Collator")
+
+search_label = QLabel("Enter search query:")
+search_input = QLineEdit()
+
+status_label = QLabel("")
+status_label.setAlignment(Qt.AlignCenter)
+
+search_button = QPushButton("Search")
+search_button.clicked.connect(perform_search)
+
+layout = QVBoxLayout()
+layout.addWidget(search_label)
+layout.addWidget(search_input)
+layout.addWidget(search_button) 
+layout.addWidget(status_label)
+
+window.setLayout(layout)
+
+window.show()
+sys.exit(app.exec_())
