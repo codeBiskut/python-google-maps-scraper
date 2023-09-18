@@ -54,12 +54,38 @@ def google_search(query):
     else:
         print('Error:', response.status_code)
         return None
+    
+def csvExport(search_results):
+    list_of_dicts = []
+    for place in search_results:
+        place_dict = {
+            "name": place.name,
+            "address": place.address,
+            "number": place.number,
+            "rating": place.rating,
+            "website": place.website
+        }
+        list_of_dicts.append(place_dict)
+
+    #need to ask for filename
+    csv_file_name = 'output.csv'
+
+    csv_header = list_of_dicts[0].keys() if search_results else []
+
+    with open(csv_file_name, mode='w', newline='') as csv_file:
+        writer = csv.DictWriter(csv_file, fieldnames=csv_header)
+        writer.writeheader()
+        writer.writerows(list_of_dicts)
+
+    print(f'CSV data has been written to {csv_file_name}')
+
 
 def main():
     search_query = 'breweries'
     search_results = google_search(search_query)
 
     if search_results:
+        csvExport(search_results)
         for result in search_results:
             print(f"Name: {result.name}")
             print(f"Address: {result.address}")
